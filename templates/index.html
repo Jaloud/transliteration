@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Text Processing</title>
+    </head>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <body>
+        <div id="container">
+        <form>
+            <input type="text" id="user_input" name="user_input">
+            <input type="button" value="Submit" onclick="submitForm()">
+        </form>
+        <h1>Transliteration:</h1>
+        <i class="fas fa-arrow-down"></i>
+        <h1 ><span id="answer"></span></h1>
+        </div>
+        <script>
+            function submitForm() {
+                var user_input = document.querySelector("input[name='user_input']").value;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/process", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        document.getElementById("answer").innerHTML = this.responseText;
+                    }
+                };
+                xhttp.send("user_input=" + user_input);
+            }
+        </script>
+    </body>
+    <footer>
+        <p>Created by: Abdulaziz Al Jaloud and Ahmed Alzohairy</p>
+        <p>Email: abdulazizsaud@g.ucla.edu</p>
+      </footer>
+      
+</html>
+
