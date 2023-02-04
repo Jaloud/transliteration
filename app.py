@@ -2,82 +2,89 @@ from flask import Flask, request, render_template
 import re
 import json
 
-def transliterate(arabic_text):
-    rules = {
-        "ء": "ʾ",
-        "آ": "ā",
-        "أ": "a",
-        "ؤ": "ʾ",
-        "ئ": "ʾ",
-        "إ": "i",
-        "أُ": "u",
-        "ا": "a",
-        "اِ": "i",
-        "ب": "b",
-        "ة": "h",
-        "ت": "t",
-        "ث": "th",
-        "ج": "j",
-        "ح": "ḥ",
-        "خ": "kh",
-        "د": "d",
-        "ذ": "dh",
-        "ر": "r",
-        "ز": "z",
-        "س": "s",
-        "ش": "sh",
-        "ص": "ṣ",
-        "ض": "ḍ",
-        "ط": "ṭ",
-        "ظ": "ẓ",
-        "ع": "ʿ",
-        "غ": "gh",
-        "ف": "f",
-        "ق": "q",
-        "ك": "k",
-        "ل": "l",
-        "م": "m",
-        "ن": "n",
-        "ه": "h",
-        "و": "w",
-        "ى": "a",
-        "ي": "y",
-        "َ": "a",
-        "ُ": "u",
-        "ِ": "i",
-        "ً": "an",
-        "ٌ": "un",
-        "ٍ": "in",
-        "َ" + "ا": "ā",
-        "َ" + "ى": "ā",
-        "ُ" + "و": "ū",
-        "ِ" + "ي": "ī",
-        "ِ" + "يَ": "iy",
-        "ةَ": "ta",
-        "ةِ": "ti",
-        "ةُ": "tu",
-        "ةً": "tan",
-        "ةٍ": "tin",
-        "ةٌ": "tun",
-        "وا": "ū",
-        "أَ": "ʾa",
-        "أْ": "ʾ",
-    }
 
+rules = {
+    "ء": "ʾ",
+    "آ": "ā",
+    "أ": "a",
+    "ؤ": "ʾ",
+    "ئ": "ʾ",
+    "إ": "i",
+    "أُ": "u",
+    "ا": "a",
+    "اِ": "i",
+    "ب": "b",
+    "ة": "h",
+    "ت": "t",
+    "ث": "th",
+    "ج": "j",
+    "ح": "ḥ",
+    "خ": "kh",
+    "د": "d",
+    "ذ": "dh",
+    "ر": "r",
+    "ز": "z",
+    "س": "s",
+    "ش": "sh",
+    "ص": "ṣ",
+    "ض": "ḍ",
+    "ط": "ṭ",
+    "ظ": "ẓ",
+    "ع": "ʿ",
+    "غ": "gh",
+    "ف": "f",
+    "ق": "q",
+    "ك": "k",
+    "ل": "l",
+    "م": "m",
+    "ن": "n",
+    "ه": "h",
+    "و": "w",
+    "ى": "a",
+    "ي": "y",
+    "َ": "a",
+    "ُ": "u",
+    "ِ": "i",
+    "ً": "an",
+    "ٌ": "un",
+    "ٍ": "in",
+    "َ" + "ا": "ā",
+    "َ" + "ى": "ā",
+    "ُ" + "و": "ū",
+    "ِ" + "ي": "ī",
+    "ِ" + "يَ": "iy",
+    "ةَ": "ta",
+    "ةِ": "ti",
+    "ةُ": "tu",
+    "ةً": "tan",
+    "ةٍ": "tin",
+    "ةٌ": "tun",
+    "وا": "ū",
+    "أَ": "ʾa",
+    "أْ": "ʾ",
+}
+
+def transliterate(arabic_text):
     transliteration = ""
 
     prev_char = ""
     #مشكلة طه
     arabic_text = re.sub("ط?َه", "ṭāha", arabic_text)
     #مشكلة يس
-    arabic_text = re.sub("(^|) يَس (.)", "yāsīn", arabic_text)
+    arabic_text = re.sub("( |^)يَس( |$)", "yāsīn", arabic_text)
+
+    arabic_text = re.sub("الله", "allah", arabic_text)
+
     arabic_text = re.sub("الرَّحمَ?ن", "al-raḥmān", arabic_text)
+
     # sunny AL الشمسية
     arabic_text = re.sub("(^| )ال(.)ّ", "\g<1>al-\g<2>", arabic_text)
+
     # moony AL القمرية
     arabic_text = re.sub("(^| )ال", "\g<1>al-", arabic_text)
     # مشكلة أحمد
     arabic_text = re.sub("(^| )أَ", "\g<1>a", arabic_text)
+
     # yaa مشكلة ضياء
     arabic_text = re.sub("يَاء", "yāʾ", arabic_text)
     # مشكلة مواساة
@@ -85,7 +92,9 @@ def transliterate(arabic_text):
     # مشكلة ابن تيمية
     arabic_text = re.sub("يَّ", "yya", arabic_text)
     # مشكلة واعتصموا
-    
+
+    #مشكلة بالله
+
     for i, char in enumerate(arabic_text):
         if prev_char + char in rules:
             transliteration = transliteration[:-1]
@@ -99,10 +108,7 @@ def transliterate(arabic_text):
         else:
             transliteration += char
             prev_char = char
-            
     return transliteration
-
-
 
 from flask import Flask, request
 
