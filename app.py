@@ -1,6 +1,13 @@
 from flask import Flask, request, render_template
 import re
-import json
+import arabic_reshaper
+import bidi.algorithm
+
+def add_diacritics(text):
+    reshaped_text = arabic_reshaper.reshape(text)
+    bidirectional_text = bidi.algorithm.get_display(reshaped_text)
+    return bidirectional_text
+
 
 
 rules = {
@@ -121,6 +128,8 @@ def index():
 @app.route("/process", methods=["POST"])
 def process():
     user_input = request.form["user_input"]
+    if not any(char in arabic_reshaper.ARABIC_TASHKEEL for char in user_input):
+        user_input = add_diacritics(user_input)
     result = transliterate(user_input)
     return result
 
