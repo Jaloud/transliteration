@@ -10,6 +10,7 @@
         <form>
             <input type="text" id="user_input" name="user_input">
             <input type="button" value="Submit" onclick="submitForm()">
+            <input type="button" value="Add Diacrtics" onclick="submitForm2()">
         </form>
         <h1>الترويم</h1>
         <i class="fas fa-arrow-down"></i>
@@ -20,6 +21,18 @@
                 var user_input = document.querySelector("input[name='user_input']").value;
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("POST", "/process", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        document.getElementById("answer").innerHTML = this.responseText;
+                    }
+                };
+                xhttp.send("user_input=" + user_input);
+            }
+            function submitForm2() {
+                var user_input = document.querySelector("input[name='user_input']").value;
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "/process_diacritics", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xhttp.onreadystatechange = function () {
                     if (this.readyState === 4 && this.status === 200) {
