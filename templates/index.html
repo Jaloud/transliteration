@@ -5,34 +5,51 @@
         <title>مشروع الترويم</title>
     </head>
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <script>
+        function submitForm() {
+            var user_input = document.querySelector("input[name='user_input']").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/process", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("answer").innerHTML = this.responseText;
+                }
+            };
+            xhttp.send("user_input=" + user_input);
+        }
+        function submitForm2() {
+            var user_input = document.querySelector("input[name='user_input']").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/process_diacritics", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("answer").innerHTML = this.responseText;
+                }
+            };
+            xhttp.send("user_input=" + user_input);
+        }
+        if (document.getElementById("answer").innerHTML.trim() == "" || document.getElementById("user_input").innerHTML.trim() == "") {
+            document.getElementById("answer").innerHTML = "&nbsp;";
+        }
+
+    </script>
     <body>
-        <div id="container">
-        <form>
-            <input type="text" id="user_input" name="user_input">
-            <input type="button" value="Submit" onclick="submitForm()">
-        </form>
-        <h1>الترويم</h1>
-        <i class="fas fa-arrow-down"></i>
-        <h1 ><span id="answer"></span></h1>
+        <div class="container-wrapper">
+            <div id="container">
+                <form>
+                    <input type="text" id="user_input" name="user_input">
+                    <input type="button" value="Submit" onclick="submitForm()">
+                    <input type="button" value="Auto Diacrtics" onclick="submitForm2()">
+                </form>
+                <h1>الترويم</h1>
+                <h1 ><span id="answer">&nbsp; </span></h1>
+            </div>
+            <div id="disclaimer">
+                <p>تم عمل هذا الموقع التجريبي خدمة للباحثين المهتمين بأبحاث اللغة العربية في المؤسسات البحثية والأكاديمية الغربية</p>
+            </div>
         </div>
-        <script>
-            function submitForm() {
-                var user_input = document.querySelector("input[name='user_input']").value;
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "/process", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState === 4 && this.status === 200) {
-                        document.getElementById("answer").innerHTML = this.responseText;
-                    }
-                };
-                xhttp.send("user_input=" + user_input);
-            }
-        </script>
-    </body>
-    <footer>
-        <p>تم عمل هذا الموقع التجريبي خدمة للباحثين المهتمين بأبحاث اللغة العربية في المؤسسات البحثية والأكاديمية الغربية</p>
-      </footer>
       
 </html>
 

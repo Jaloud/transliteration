@@ -1,12 +1,9 @@
 from flask import Flask, request, render_template
 import re
-import arabic_reshaper
-import bidi.algorithm
-
-def add_diacritics(text):
-    reshaped_text = arabic_reshaper.reshape(text)
-    bidirectional_text = bidi.algorithm.get_display(reshaped_text)
-    return bidirectional_text
+import asyncio
+from pybelqis import Belqis
+import os
+b = Belqis(token=os.environ.get('BELQIS_TOKEN'))
 
 
 
@@ -119,6 +116,19 @@ def transliterate(arabic_text):
 
 from flask import Flask, request
 
+async def tash(belqis_client, arabic_text):
+    # This function takes two arguments:
+    # belqis_client: a Belqis object that has an authentication token
+    # arabic_text: a string of Arabic text to be diacritized and transliterated
+
+    # It retrieves the diacritized version of the input arabic_text using the tashkeel method from the Belqis API, and then returns its transliterated version using the transliterate function.
+
+    # Returns:
+    # str: The transliterated version of the diacritized arabic_text.
+
+    r = await belqis_client.tashkeel(arabic_text)
+    return transliterate(next(iter(r.values())))
+
 app = Flask(__name__, static_folder='static')
 
 @app.route('/')
@@ -128,10 +138,15 @@ def index():
 @app.route("/process", methods=["POST"])
 def process():
     user_input = request.form["user_input"]
-    if not any(char in arabic_reshaper.ARABIC_TASHKEEL for char in user_input):
-        user_input = add_diacritics(user_input)
     result = transliterate(user_input)
     return result
+
+@app.route("/process_diacritics", methods=["POST"])
+def process_diacritics():
+    user_input = request.form["user_input"]
+    added_diacritics = asyncio.run(tash(b, user_input))
+    transliterated_dict= transliterate(added_diacritics)
+    return transliterated_dict
 
 
 if __name__ == '__main__':
