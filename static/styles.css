@@ -5,71 +5,92 @@
 }
 
 #container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  max-width: 800px;
+  height: 100vh;
+}
+
+#disclaimer {
+  text-align: center;
+}
+
 body {
   background-color: #b8c6db;
   background-image: linear-gradient(315deg, #b8c6db 0%, #f5f7fa 100%);
   font-family: "Poppins", sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden;
   margin: 0;
 }
 
 form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 input[type="text"] {
-    border: none;
-    border-radius: 10px;
-    padding: 1rem;
-    font-size: 1.1rem;
-    font-family: inherit;
-    margin-right: 1rem;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  margin-right: 1rem;
 }
 
 input[type="button"] {
-    background-color: #118ab2;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    font-family: inherit;
-    padding: 1.3rem;
+  background-color: #118ab2;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-family: inherit;
+  padding: 1.3rem;
+  margin: 0.5rem;
 }
 
 input[type="button"]:hover {
-    background-color: #118ab2;
+  background-color: #118ab2;
 }
 
 input[type="button"]:focus {
-    outline: none;
-    background-color: #118ab2;
+  outline: none;
+  background-color: #118ab2;
 }
 
 h2 {
-    padding: 1rem;
-    text-align: center;
-    margin: 0;
+  padding: 1rem;
+  text-align: center;
+  margin: 0;
 }
 
 #answer {
-    font-weight: bold;
-    color: #118ab2;
+  font-weight: bold;
+  color: #118ab2;
 }
-i.fas {
-    font-size: 2rem;
-    padding: 0.5rem;
-    color: #118ab2;
+
+@media (max-width: 600px) {
+  /* Change the font size of the heading */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Add some spacing around the answer box */
+  #answer {
+    margin: 1rem 0;
+  }
+
+  /* Change the layout of the form to be vertically stacked */
+  form {
+    flex-direction: column;
+  }
+
+  /* Add some spacing between the input fields and buttons */
+  input[type="text"],
+  input[type="button"] {
+    margin: 1rem 0;
+  }
 }
