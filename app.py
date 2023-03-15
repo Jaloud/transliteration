@@ -1,9 +1,15 @@
 from flask import Flask, request, render_template
 import re
-import asyncio
-from pybelqis import Belqis
 import os
-b = Belqis(token=os.environ.get('BELQIS_TOKEN'))
+from camel_tools.utils.normalize import normalize_unicode
+from camel_tools.utils.dediac import dediac_ar
+from camel_tools.tokenizers.word import simple_word_tokenize
+from camel_tools.disambig.mle import MLEDisambiguator
+from camel_tools.tokenizers.morphological import MorphologicalTokenizer
+from camel_tools.utils.charmap import CharMapper
+
+
+
 
 
 
@@ -68,7 +74,8 @@ rules = {
     "أْ": "ʾ",
 }
 
-def transliterate(arabic_text):
+def transliterate(tokens):
+    arabic_text = ''.join(tokens)
     transliteration = ""
 
     prev_char = ""
@@ -114,27 +121,12 @@ def transliterate(arabic_text):
             prev_char = char
     return transliteration
 
-from flask import Flask, request
-
-async def tash(belqis_client, arabic_text):
-    # This function takes two arguments:
-    # belqis_client: a Belqis object that has an authentication token
-    # arabic_text: a string of Arabic text to be diacritized and transliterated
-
-    # It retrieves the diacritized version of the input arabic_text using the tashkeel method from the Belqis API, and then returns its transliterated version using the transliterate function.
-
-    # Returns:
-    # str: The transliterated version of the diacritized arabic_text.
-
-    r = await belqis_client.tashkeel(arabic_text)
-    return transliterate(next(iter(r.values())))
-
 app = Flask(__name__, static_folder='static')
 
 @app.route('/')
 def index():
     return render_template('index.html')
-  
+
 @app.route("/process", methods=["POST"])
 def process():
     user_input = request.form["user_input"]
@@ -144,10 +136,15 @@ def process():
 @app.route("/process_diacritics", methods=["POST"])
 def process_diacritics():
     user_input = request.form["user_input"]
-    added_diacritics = asyncio.run(tash(b, user_input))
-    transliterated_dict= transliterate(added_diacritics)
-    return transliterated_dict
-
+    # user_input_normalized = normalize_unicode(user_input)
+    # user_input_dediac = dediac_ar(user_input_normalized)
+    # We can output diacritized tokens by setting `diac=True
+    mle = MLEDisambiguator.pretrained('calima-msa-r13')
+    tokenizer = MorphologicalTokenizer(mle, scheme='d3tok', split=True, diac=True)
+    tokens = tokenizer.tokenize(user_input)
+    print(tokens)
+    arabic_text = ''.join(tokens)
+    return arabic_text
 
 if __name__ == '__main__':
     app.run(debug=True)
